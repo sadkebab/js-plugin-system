@@ -37,12 +37,12 @@ const importPromises = plugins.map(
 
 const pluginModules = await Promise.all(importPromises);
 
-pluginModules.forEach(({ module, plugin }) => {
+pluginModules.forEach(({ module, plugin: pluginPath }) => {
   if (module.default) {
     module.default(ctx);
-    console.log(`[Loaded] ${module.meta?.name ? module.meta.name : plugin}`);
+    console.log(`[Loaded] ${module.meta?.name ? module.meta.name : pluginPath}`);
   } else {
-    console.log(`[Skip] ${plugin} CAUSE: no default export`);
+    console.log(`[Skip] ${pluginPath} CAUSE: no default export`);
   }
 });
 
