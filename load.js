@@ -13,8 +13,11 @@ const pluginsDirPath = path.join(__dirname, PLUGINS_FOLDER);
 const pluginsDirContent = fs.readdirSync(pluginsDirPath);
 
 const plugins = pluginsDirContent
+  //we get the full path of each item
   .map((item) => path.join(pluginsDirPath, item))
+  //we keep only the directories
   .filter((itemPath) => fs.lstatSync(itemPath).isDirectory())
+  //we filter out the directories that don't contain a plugin.js file
   .map((itemPath) => path.join(itemPath, PLUGIN_FILE))
   .filter((pluginPath) => fs.existsSync(pluginPath));
 
