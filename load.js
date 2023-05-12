@@ -9,29 +9,28 @@ const PLUGIN_FILE = "plugin.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const directoryPath = path.join(__dirname, PLUGINS_FOLDER);
-const filesInPluginFolder = fs.readdirSync(directoryPath);
+const pluginsDirPath = path.join(__dirname, PLUGINS_FOLDER);
+const pluginsDirContent = fs.readdirSync(pluginsDirPath);
 
-const plugins = filesInPluginFolder.reduce((list, file) => {
-  const full = path.join(directoryPath, file);
+const plugins = pluginsDirContent.reduce((list, item) => {
+  const itemPath = path.join(pluginsDirPath, item);
+  if (!fs.lstatSync(itemPath).isDirectory()) return list;
 
-  if (!fs.lstatSync(full).isDirectory()) return list;
-  const plugin = path.join(full, PLUGIN_FILE);
-
-  if (fs.existsSync(plugin)) {
-    console.log(`[Found] ${plugin}`);
-    list.push(plugin);
+  const pluginFilePath = path.join(itemPath, PLUGIN_FILE);
+  if (fs.existsSync(pluginFilePath)) {
+    console.log(`[Found] ${pluginFilePath}`);
+    list.push(pluginFilePath);
   }
-  
+
   return list;
 }, []);
 
 const importPromises = plugins.map(
-  (plugin) =>
+  (pluginPath) =>
     new Promise((res, rej) => {
       //we retrieve the module and associate it to the plugin path so we can log it later
-      import(plugin)
-        .then((module) => res({ module, plugin }))
+      import(pluginPath)
+        .then((module) => res({ module, pluginPath }))
         .catch((err) => rej(err));
     })
 );
