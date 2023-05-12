@@ -37,7 +37,7 @@ const importPromises = plugins.map(
 
 const pluginModules = await Promise.all(importPromises);
 
-pluginModules.forEach(({ module, plugin: pluginPath }) => {
+pluginModules.forEach(({ module, pluginPath }) => {
   if (module.default) {
     module.default(ctx);
     console.log(
